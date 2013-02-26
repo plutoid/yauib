@@ -7,11 +7,23 @@ import subprocess
 import re
 import sys
 import os
+from BeautifulSoup import BeautifulSoup
 
+'''
+Thanks to
+http://stackoverflow.com/questions/5618878/how-to-convert-list-to-string
+http://stackoverflow.com/questions/3651589/regexp-python-with-parsing-html-page
+http://stackoverflow.com/questions/55391/python-regular-expression-for-html-parsing-beautifulsoup
+'''
 
-p = subprocess.Popen('curl %s'% sys.argv[1], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-for line in p.stdout.readlines():
-    title = re.findall("<title.*?\/title>", line) 
-    if len(title) == 1:
-        print title[0]
+p = subprocess.Popen('curl %s  2>/dev/null'% sys.argv[1], shell=True, stdout=subprocess.PIPE )
+
+htmllist =  p.stdout.readlines()
+html = ''.join(map(str, htmllist))
+#html = ''.join(str(e) for e in htmllist)
+
+soup = BeautifulSoup(html)
+for each in soup.find(name = 'title'):
+    print each
+
 
